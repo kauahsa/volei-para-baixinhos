@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vôlei para Baixinhos — Inscrição</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #FFB800;   /* amarelo bola */
+      --secondary: #0085FF; /* azul bola */
+      --accent: #FF5C00;    /* laranja vibrante */
+      --bg-color: #E0F4FF;  /* azul claro fundo */
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: var(--bg-color);
+      background-image: radial-gradient(#bae6fd 20%, transparent 20%), radial-gradient(#bae6fd 20%, transparent 20%);
+      background-size: 40px 40px;
+      background-position: 0 0, 20px 20px;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, .kid-font { font-family: 'Fredoka One', cursive; }
+
+    .form-card {
+      background-color: #fff;
+      border: 6px solid var(--secondary);
+      border-radius: 40px;
+      box-shadow: 12px 12px 0px var(--primary);
+    }
+
+    .kid-input {
+      width: 100%;
+      padding: 13px 18px;
+      border: 4px solid #cbd5e1;
+      border-radius: 22px;
+      font-size: 1.05rem;
+      color: #333;
+      outline: none;
+      background: #fff;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    .kid-input:focus {
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 6px rgba(0, 133, 255, 0.2);
+      transform: scale(1.02);
+    }
+    .kid-input.erro { border-color: var(--accent); }
+
+    /* Grupo de opções (radio/checkbox) em cartões */
+    .opcao {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 16px;
+      border: 4px solid #cbd5e1;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+    .opcao:hover { border-color: var(--secondary); background: #f0f9ff; }
+    .opcao input { width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; }
+    .grupo.erro .opcoes { outline: 3px dashed var(--accent); outline-offset: 4px; border-radius: 20px; }
+
+    .spike-btn {
+      background-color: var(--accent);
+      color: #fff;
+      border: 4px solid #cc4a00;
+      border-radius: 50px;
+      padding: 15px 30px;
+      font-size: 1.4rem;
+      cursor: pointer;
+      box-shadow: 0 8px 0 #cc4a00, 0 15px 10px rgba(0,0,0,0.2);
+      transition: all 0.1s ease;
+      display: flex; align-items: center; justify-content: center; gap: 15px;
+      width: 100%;
+    }
+    .spike-btn:active { transform: translateY(8px); box-shadow: 0 0px 0 #cc4a00, 0 5px 5px rgba(0,0,0,0.2); }
+    .spike-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+    .volleyball { width: 56px; height: 56px; animation: bounce 2s infinite ease-in-out; filter: drop-shadow(0 10px 5px rgba(0,0,0,0.2)); }
+
+    @keyframes bounce { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-20px) rotate(180deg); } }
+    @keyframes rolling { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes spikeAway { 0% { transform: scale(1) translate(0,0); } 50% { transform: scale(1.2) translate(50px,-100px); } 100% { transform: scale(0) translate(200px,-300px); opacity: 0; } }
+    .anim-spike { animation: spikeAway 0.8s forwards ease-in; }
+
+    .volleyball-net {
+      position: fixed; top: 0; left: 0; width: 100%; height: 150px;
+      background-image:
+        linear-gradient(90deg, transparent 95%, #ffffff 95%),
+        linear-gradient(transparent 90%, #ffffff 90%);
+      background-size: 30px 30px;
+      border-bottom: 10px solid #fff;
+      opacity: 0.4; z-index: 0;
+    }
+
+    .success-message { display: none; text-align: center; animation: popIn 0.5s cubic-bezier(0.68,-0.55,0.265,1.55) forwards; }
+    @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+    /* Bolas atravessando a tela */
+    .bolas-horizontais { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .bola-h { position: absolute; left: -10%; animation-name: atravessar; animation-timing-function: linear; animation-iteration-count: infinite; }
+    .faixa1 { top: 12%; font-size: 36px; animation-duration: 11s; animation-delay: 0s; }
+    .faixa2 { top: 34%; font-size: 50px; animation-duration: 15s; animation-delay: 3s; }
+    .faixa3 { top: 56%; font-size: 30px; animation-duration: 9s;  animation-delay: 1.5s; }
+    .faixa4 { top: 74%; font-size: 54px; animation-duration: 17s; animation-delay: 5s; }
+    .faixa5 { top: 90%; font-size: 40px; animation-duration: 13s; animation-delay: 2s; }
+    @keyframes atravessar { 0% { transform: translateX(0) rotate(0deg); } 100% { transform: translateX(120vw) rotate(900deg); } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .bola-h, .volleyball { animation: none; }
+      .bolas-horizontais { display: none; }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 relative">
+
+  <div class="volleyball-net"></div>
+
+  <!-- Bolas atravessando a tela -->
+  <div class="bolas-horizontais" aria-hidden="true">
+    <span class="bola-h faixa1">🏐</span>
+    <span class="bola-h faixa2">🏐</span>
+    <span class="bola-h faixa3">🏐</span>
+    <span class="bola-h faixa4">🏐</span>
+    <span class="bola-h faixa5">🏐</span>
+  </div>
+
+  <div id="form-container" class="form-card w-full max-w-lg p-8 relative z-10 my-8">
+
+    <!-- Cabeçalho -->
+    <div class="text-center mb-8">
+      <div class="flex justify-center mb-4">
+        <svg class="volleyball" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="48" fill="#FFB800" stroke="#000" stroke-width="4"/>
+          <path d="M 10,30 C 40,40 60,60 90,70" stroke="#0085FF" stroke-width="8" fill="none" stroke-linecap="round"/>
+          <path d="M 30,10 C 40,40 60,60 70,90" stroke="#0085FF" stroke-width="8" fill="none" stroke-linecap="round"/>
+          <path d="M 20,80 C 40,50 60,50 80,20" stroke="#ffffff" stroke-width="8" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h1 class="kid-font text-4xl text-blue-600 mb-2">Hora do Jogo!</h1>
+      <p class="text-lg text-gray-600 font-bold">Preencha seus dados para entrar no time. 🏐</p>
+    </div>
+
+    <!-- Formulário -->
+    <form id="kid-form" class="space-y-5" novalidate>
+
+      <!-- ===== DADOS PESSOAIS ===== -->
+      <h2 class="kid-font text-2xl text-orange-500 pt-2">👟 Dados pessoais</h2>
+
+      <div>
+        <label class="kid-font text-lg text-blue-500 mb-1 block ml-2">Nome completo</label>
+        <input type="text" class="kid-input" data-entry="entry.1370952004" required />
+      </div>
+      <div>
+        <label class="kid-font text-lg text-blue-500 mb-1 block ml-2">Data de nascimento</label>
+        <input type="date" class="kid-input" data-entry="entry.1488058502" data-tipo="data" required />
+      </div>
+      <div>
+        <label class="kid-font text-lg text-blue-500 mb-1 block ml-2">Endereço</label>
+        <input type="text" class="kid-input" data-entry="entry.581525485" required />
+      </div>
+      <div>
+        <label class="kid-font text-lg text-blue-500 mb-1 block ml-2">Contato do responsável (telefone / WhatsApp)</label>
+        <input type="text" class="kid-input" data-entry="entry.1434602677" required />
+      </div>
+      <div>
+        <label class="kid-font text-lg text-blue-500 mb-1 block ml-2">Responsável (se for menor de idade)</label>
+        <input type="text" class="kid-input" data-entry="entry.427304794" required />
+      </div>
+      <div>
+        <label class="kid-font text-lg text-blue-500 mb-1 block ml-2">Escola que estuda</label>
+        <input type="text" class="kid-input" data-entry="entry.1568824317" required />
+      </div>
+      <div>
+        <label class="kid-font text-lg text-blue-500 mb-1 block ml-2">Ano que estuda</label>
+        <input type="text" class="kid-input" data-entry="entry.821365109" required />
+      </div>
+      <div class="grupo">
+        <label class="kid-font text-lg text-blue-500 mb-1 block ml-2">Período que estuda</label>
+        <div class="opcoes space-y-2" data-entry="entry.1805480479" data-tipo="checkbox" data-required="true">
+          <label class="opcao"><input type="checkbox" value="Matutino" /> 🌅 Matutino</label>
+          <label class="opcao"><input type="checkbox" value="Vespertino" /> ☀️ Vespertino</label>
+          <label class="opcao"><input type="checkbox" value="Noturno" /> 🌙 Noturno</label>
+        </div>
+      </div>
+
+      <!-- ===== SAÚDE E ANAMNESE ===== -->
+      <h2 class="kid-font text-2xl text-orange-500 pt-4">💪 Saúde do craque</h2>
+
+      <div>
+        <label class="kid-font text-lg text-blue-500 mb-1 block ml-2">Peso (kg)</label>
+        <input type="text" class="kid-input" data-entry="entry.923750615" required />
+      </div>
+      <div>
+        <label class="kid-font text-lg text-blue-500 mb-1 block ml-2">Altura (cm)</label>
+        <input type="text" class="kid-input" data-entry="entry.12013773" required />
+      </div>
+      <div class="grupo">
+        <label class="kid-font text-lg text-blue-500 mb-1 block ml-2">Realiza atividades físicas?</label>
+        <div class="opcoes space-y-2" data-entry="entry.1538158661" data-tipo="radio" data-required="true">
+          <label class="opcao"><input type="radio" name="atividades" value="Sim" /> ✅ Sim</label>
+          <label class="opcao"><input type="radio" name="atividades" value="Nao" /> ❌ Não</label>
+        </div>
+      </div>
+      <div class="grupo">
+        <label class="kid-font text-lg text-blue-500 mb-1 block ml-2">Frequência das atividades</label>
+        <div class="opcoes space-y-2" data-entry="entry.1422109174" data-tipo="radio" data-required="true">
+          <label class="opcao"><input type="radio" name="freq" value="Nenhuma" /> Nenhuma</label>
+          <label class="opcao"><input type="radio" name="freq" value="1x por semana" /> 1x por semana</label>
+          <label class="opcao"><input type="radio" name="freq" value="2x por semana" /> 2x por semana</label>
+          <label class="opcao"><input type="radio" name="freq" value="3x ou mais por semana" /> 3x ou mais por semana</label>
+        </div>
+      </div>
+      <div class="grupo">
+        <label class="kid-font text-lg text-blue-500 mb-1 block ml-2">Possui alguma contraindicação para realizar as atividades?</label>
+        <div class="opcoes space-y-2" data-entry="entry.788633501" data-tipo="radio" data-required="true">
+          <label class="opcao"><input type="radio" name="contra" value="Nao" /> ❌ Não</label>
+          <label class="opcao"><input type="radio" name="contra" value="Sim" /> ✅ Sim</label>
+        </div>
+      </div>
+      <div>
+        <label class="kid-font text-lg text-blue-500 mb-1 block ml-2">Se sim, qual contraindicação? (descreva)</label>
+        <textarea class="kid-input" data-entry="entry.1322975328" rows="3"></textarea>
+      </div>
+
+      <!-- ===== AUTORIZAÇÕES ===== -->
+      <h2 class="kid-font text-2xl text-orange-500 pt-4">📝 Autorizações do responsável</h2>
+
+      <div class="grupo">
+        <label class="kid-font text-lg text-blue-500 mb-1 block ml-2">Autorizo a participação da criança no projeto "Vôlei para Baixinhos".</label>
+        <div class="opcoes space-y-2" data-entry="entry.1402413891" data-tipo="radio" data-required="true">
+          <label class="opcao"><input type="radio" name="aut1" value="Sim, autorizo" /> ✅ Sim, autorizo</label>
+        </div>
+      </div>
+      <div class="grupo">
+        <label class="kid-font text-lg text-blue-500 mb-1 block ml-2">Autorizo o uso de imagem da criança (fotos/vídeos) para divulgação do projeto.</label>
+        <div class="opcoes space-y-2" data-entry="entry.791338550" data-tipo="radio" data-required="true">
+          <label class="opcao"><input type="radio" name="aut2" value="Sim, autorizo" /> ✅ Sim, autorizo</label>
+          <label class="opcao"><input type="radio" name="aut2" value="Não autorizo" /> ❌ Não autorizo</label>
+        </div>
+      </div>
+
+      <p id="erro-geral" class="text-center text-orange-600 font-bold bg-orange-50 border-2 border-orange-200 rounded-2xl p-3" hidden></p>
+
+      <div class="pt-2">
+        <button type="submit" class="spike-btn kid-font group">
+          <span id="btn-text">CORTAR BOLA!</span>
+          <svg id="btn-ball" class="w-8 h-8 group-hover:animate-[rolling_0.5s_linear_infinite]" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="48" fill="#FFB800" stroke="#fff" stroke-width="4"/>
+            <path d="M 15,35 C 40,40 60,60 85,65" stroke="#0085FF" stroke-width="6" fill="none"/>
+            <path d="M 35,15 C 40,40 60,60 65,85" stroke="#0085FF" stroke-width="6" fill="none"/>
+          </svg>
+        </button>
+      </div>
+    </form>
+
+    <!-- Tela de sucesso -->
+    <div id="success-screen" class="success-message py-10">
+      <div class="text-6xl mb-4">🏆</div>
+      <h2 class="kid-font text-4xl text-green-500 mb-4">PONTOOO!</h2>
+      <p class="text-2xl text-gray-700 font-bold">Você entrou para o nosso time! 🏐</p>
+      <button onclick="resetForm()" class="mt-8 bg-blue-500 text-white kid-font px-6 py-3 rounded-full border-4 border-blue-700 shadow-[0_5px_0_#1d4ed8] active:translate-y-2 active:shadow-none transition-all">
+        Fazer outra inscrição
+      </button>
+    </div>
+  </div>
+
+  <iframe name="form-sink" id="form-sink" style="display:none"></iframe>
+
+  <script>
+    const FORM_ACTION =
+      "https://docs.google.com/forms/d/e/1FAIpQLSfR-CzMkIlt7yFYR_EjPBqjD1ip4Rpa7qXnd6lLeZkiPglKRA/formResponse";
+
+    const form = document.getElementById('kid-form');
+    const btnBall = document.getElementById('btn-ball');
+    const btnText = document.getElementById('btn-text');
+    const successScreen = document.getElementById('success-screen');
+    const erroGeral = document.getElementById('erro-geral');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      erroGeral.hidden = true;
+      document.querySelectorAll('.erro').forEach((el) => el.classList.remove('erro'));
+
+      const dados = {};
+      let valido = true;
+      let primeiroInvalido = null;
+
+      document.querySelectorAll('[data-entry]').forEach((el) => {
+        const entry = el.getAttribute('data-entry');
+        const tipo = el.getAttribute('data-tipo');
+
+        if (tipo === 'checkbox' || tipo === 'radio') {
+          const marcados = Array.from(el.querySelectorAll('input:checked')).map((i) => i.value);
+          const obrigatorio = el.getAttribute('data-required') === 'true';
+          const grupo = el.closest('.grupo');
+          if (obrigatorio && marcados.length === 0) {
+            valido = false; grupo.classList.add('erro');
+            if (!primeiroInvalido) primeiroInvalido = grupo;
+          } else if (marcados.length > 0) {
+            dados[entry] = marcados;
+          }
+        } else if (tipo === 'data') {
+          const valor = el.value;
+          if (el.required && !valor) {
+            valido = false; el.classList.add('erro');
+            if (!primeiroInvalido) primeiroInvalido = el;
+          } else if (valor) {
+            const [ano, mes, dia] = valor.split('-');
+            dados[entry + '_year'] = ano;
+            dados[entry + '_month'] = String(parseInt(mes, 10));
+            dados[entry + '_day'] = String(parseInt(dia, 10));
+          }
+        } else {
+          const valor = el.value.trim();
+          if (el.required && !valor) {
+            valido = false; el.classList.add('erro');
+            if (!primeiroInvalido) primeiroInvalido = el;
+          } else if (valor) {
+            dados[entry] = valor;
+          }
+        }
+      });
+
+      if (!valido) {
+        erroGeral.textContent = 'Opa! Faltou preencher alguns campos destacados. 🏐';
+        erroGeral.hidden = false;
+        if (primeiroInvalido) primeiroInvalido.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      // Animação de cortada
+      btnBall.classList.add('anim-spike');
+      btnText.innerText = 'BAM! 💥';
+
+      enviar(dados);
+    });
+
+    function enviar(dados) {
+      const f = document.createElement('form');
+      f.action = FORM_ACTION;
+      f.method = 'POST';
+      f.target = 'form-sink';
+
+      Object.keys(dados).forEach((entry) => {
+        const valores = Array.isArray(dados[entry]) ? dados[entry] : [dados[entry]];
+        valores.forEach((v) => {
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = entry;
+          input.value = v;
+          f.appendChild(input);
+        });
+      });
+
+      // IMPORTANTE: o formulário tem múltiplas páginas (3 seções no Google Forms).
+      // Sem pageHistory, o Google registra a resposta mas descarta todos os campos.
+      // pageHistory lista o índice de todas as páginas (0,1,2).
+      const extras = { pageHistory: '0,1,2', fvv: '1' };
+      Object.keys(extras).forEach((nome) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = nome;
+        input.value = extras[nome];
+        f.appendChild(input);
+      });
+
+      document.body.appendChild(f);
+
+      const sink = document.getElementById('form-sink');
+      let feito = false;
+      const concluir = () => {
+        if (feito) return;
+        feito = true;
+        form.style.display = 'none';
+        successScreen.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+      sink.addEventListener('load', concluir, { once: true });
+      f.submit();
+      setTimeout(concluir, 2500);
+    }
+
+    function resetForm() {
+      form.reset();
+      form.style.display = 'block';
+      successScreen.style.display = 'none';
+      btnBall.classList.remove('anim-spike');
+      btnText.innerText = 'CORTAR BOLA!';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+# Credenciais e segredos — NUNCA versionar
+credenciais_google/
+*.json
+!site/**/*.json
+token*.json
+credentials.json
+
+# Ambiente Python
+venv/
+__pycache__/
+*.pyc
+
+# Arquivos temporários/diagnóstico
+_*.py
+_*.json
+_*.txt
+
+# Sistema
+.DS_Store
+Thumbs.db
