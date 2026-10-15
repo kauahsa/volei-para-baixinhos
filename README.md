@@ -18,8 +18,7 @@ e os dados caem nas respostas do formulário.
 
 ## Estrutura
 ```
-site/
-  index.html   # página única (HTML + CSS + JS inline, Tailwind via CDN)
+index.html   # página única (HTML + CSS + JS inline, Tailwind via CDN)
 ```
 
 ## Como funciona o envio
@@ -29,8 +28,8 @@ páginas (seções), o parâmetro `pageHistory=0,1,2` é enviado junto — sem e
 Google descarta os campos.
 
 ## Publicação (GitHub Pages)
-A página é servida a partir da pasta `site/` (ou da raiz, conforme a
-configuração do Pages).
+A página fica em `index.html` na raiz do repositório. Basta ativar o GitHub
+Pages apontando para a branch `main` e a pasta raiz (`/root`).
 
 ## Observações de segurança
 As credenciais do Google (pasta `credenciais_google/`) **não** fazem parte deste
