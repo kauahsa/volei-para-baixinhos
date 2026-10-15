@@ -50,6 +50,15 @@
     }
     .kid-input.erro { border-color: var(--accent); }
 
+    /* Bloco de descrição do projeto */
+    .projeto-descricao {
+      background: #f0f9ff;
+      border: 4px solid var(--secondary);
+      border-radius: 24px;
+      padding: 20px 24px;
+      box-shadow: 6px 6px 0px var(--primary);
+    }
+
     /* Grupo de opções (radio/checkbox) em cartões */
     .opcao {
       display: flex; align-items: center; gap: 10px;
@@ -144,6 +153,20 @@
       <h1 class="kid-font text-4xl text-blue-600 mb-2">Hora do Jogo!</h1>
       <p class="text-lg text-gray-600 font-bold">Preencha seus dados para entrar no time. 🏐</p>
     </div>
+
+    <!-- Descrição do projeto -->
+    <section class="projeto-descricao mb-8" aria-label="Sobre o projeto">
+      <h2 class="kid-font text-2xl text-orange-500 mb-3 flex items-center gap-2">🏐 Sobre o projeto</h2>
+      <p class="text-gray-700 font-semibold leading-relaxed">
+        O projeto <strong>"Vôlei para Baixinhos"</strong> tem como objetivo promover a
+        iniciação esportiva ao voleibol para crianças de 6 a 12 anos, por meio de
+        atividades lúdicas e treinos adaptados à faixa etária. O projeto busca
+        desenvolver habilidades motoras, estimular a socialização, a cooperação e o
+        respeito, além de incentivar o interesse pela prática esportiva. As aulas
+        serão realizadas duas vezes por semana, com atividades progressivas, jogos e
+        acompanhamento da evolução dos participantes.
+      </p>
+    </section>
 
     <!-- Formulário -->
     <form id="kid-form" class="space-y-5" novalidate>
